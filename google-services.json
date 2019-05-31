@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "729334301330",
+    "firebase_url": "https://coffeedeliverypioneiro.firebaseio.com",
+    "project_id": "coffeedeliverypioneiro",
+    "storage_bucket": "coffeedeliverypioneiro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729334301330:android:a24db74f0eec11a8",
+        "android_client_info": {
+          "package_name": "com.example.coffeedelivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729334301330-1pbspn6l42poeu9c7v6pj8cu0hennnf7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdepGNDJ2bw1-_werLmBNvuorHU8Qnd0o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "729334301330-1pbspn6l42poeu9c7v6pj8cu0hennnf7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
