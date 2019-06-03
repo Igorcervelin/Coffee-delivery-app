@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/initbackground"
+    tools:context=".LoginActivity">
+
+    <ImageView
+        android:layout_width="119dp"
+        android:layout_height="127dp"
+        android:layout_marginStart="118dp"
+        android:layout_marginTop="75dp"
+        android:background="@drawable/xicara"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:layout_width="317dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="260dp"
+        android:paddingLeft="10dp"
+        android:textColor="#000"
+        android:background="@drawable/editext_background"
+        android:hint=" Username"
+        android:textColorHint="#505050"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="330dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:passwordToggleEnabled="true"
+        android:textColorHint="#505050"
+        app:passwordToggleTint="#505050"
+        tools:ignore="MissingConstraints">
+
+        <EditText
+            android:layout_width="317dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="20dp"
+            android:paddingLeft="10dp"
+            android:textColor="#000"
+            android:background="@drawable/editext_background"
+            android:hint=" Password"
+            android:inputType="textPassword"
+            android:textColorHint="#505050"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.design.widget.TextInputLayout>
+    <Button
+        android:id="@+id/btLogin"
+        android:layout_width="168dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="425dp"
+        android:background="@drawable/bts_neutral"
+        android:text="Login"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btSignup"
+        android:layout_width="168dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="205dp"
+        android:layout_marginTop="615dp"
+        android:background="@drawable/bts_transparent"
+        android:text="Cadastre-se"
+        android:textSize="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

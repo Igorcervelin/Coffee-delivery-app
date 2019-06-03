@@ -7,4 +7,11 @@
     android:background="@drawable/splash"
     tools:context=".SplashActivity">
 
+    <ImageView
+        android:id="@+id/ivSplash"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-78dp"
+        tools:layout_editor_absoluteY="98dp" />
+
 </android.support.constraint.ConstraintLayout>
