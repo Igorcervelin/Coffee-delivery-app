@@ -12,11 +12,14 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.example.coffeedelivery.FirebaseDB.getDatabaseReference;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -26,6 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     Button btRegister, btBack;
     Spinner spSetor;
     public String username, password;
+    private DatabaseReference db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
         btRegister = (Button) findViewById(R.id.btRegister);
         btBack = (Button) findViewById(R.id.btBack);
         spSetor = (Spinner) findViewById(R.id.spSetor);
+        db = getDatabaseReference();
 
         Thread thread = new Thread() {
             @Override
@@ -110,6 +115,9 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     password = senha.getText().toString();
                     Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso", Toast.LENGTH_LONG).show();
+                    db.child("users").child(username).child("name").setValue(cadastronome.getText().toString());
+                    db.child("users").child(username).child("last").setValue(cadastrosobrenome.getText().toString());
+                    db.child("users").child(username).child("setor").setValue(spSetor.getSelectedItem().toString());
                     gtLogin();
                 }
             }
