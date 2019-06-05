@@ -1,11 +1,9 @@
 package com.example.coffeedelivery;
 
 import android.content.Intent;
-import android.nfc.Tag;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
 
     Button btSignup, btLogin;
     EditText userfield, passfield;
+    String user, pass;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference db = database.getReference("users");
 
@@ -37,7 +36,39 @@ public class LoginActivity extends AppCompatActivity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                gtList();
+                user = userfield.getText().toString().toLowerCase();
+                pass = passfield.getText().toString().toLowerCase();
+                db.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (final DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(user.equals(snapshot.getKey())){
+                                db.child(user).child("password").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        if(pass.equals(dataSnapshot.getValue().toString())){
+                                            Toast.makeText(getApplicationContext(), "Logado com sucesso", Toast.LENGTH_SHORT).show();
+                                            gtList();
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Usuário não cadastrado", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
@@ -47,6 +78,8 @@ public class LoginActivity extends AppCompatActivity {
                 gtRegister();
             }
         });
+
+
     }
 
     private void gtList(){
