@@ -3,6 +3,7 @@ package com.example.coffeedelivery;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -12,9 +13,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +36,7 @@ public class RegisterActivity extends AppCompatActivity {
     public String username, password;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference db = database.getReference("users");
+    int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                         public void run() {
                             String nome = cadastronome.getText().toString();
                             String sobrenome = cadastrosobrenome.getText().toString();
-                            username = (nome + sobrenome).replace(" ", "");
+                            username = (nome + sobrenome).replace(" ", "").toLowerCase();
                             tvLogin.setText(username);
                         }});
                     }
@@ -68,20 +74,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         thread.start();
 
-        List<String> setor = new ArrayList<>(Arrays.asList("Selecione seu setor","Compras","Diretoria","Expedição","Faturamento","Faturamento","Financeiro","Laboratório","Logistica","Manutenção"," Marketing","Qualidade","RH","TI","Vendas"));
+        List<String> setor = new ArrayList<>(Arrays.asList("Selecione seu setor","Compras","Diretoria","Expedição","Faturamento","Faturamento","Financeiro","Laboratório","Logistica","Manutenção","Marketing","Qualidade","RH","TI","Vendas"));
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item, setor );
 
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         spSetor.setAdapter(dataAdapter);
-
-        int posicao = spSetor.getSelectedItemPosition();
-        if (posicao == 0){
-            // Valor nulo
-        } else {
-            String department = spSetor.getSelectedItem().toString();
-        }
 
         btBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,33 +92,52 @@ public class RegisterActivity extends AppCompatActivity {
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                db.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(username.equals(snapshot.getKey())){
+                                flag = 1;
+                            }
+                        }
+                    }
 
-                if(cadastronome.getText().toString().equals("")){
-                    cadastronome.setError("Este campo é obrigatório!");
-                    Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                }if(cadastrosobrenome.getText().toString().equals("")){
-                    cadastrosobrenome.setError("Este campo é obrigatório!");
-                    Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                }if(senha.getText().toString().equals("")) {
-                    senha.setError("Este campo é obrigatório!");
-                    Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                }if(repsenha.getText().toString().equals("")){
-                    repsenha.setError("Este campo é obrigatório!");
-                    Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                }else if(spSetor.getSelectedItem().toString().equals("Selecione seu setor")){
-                    Toast.makeText(getApplicationContext(), "Nenhum setor selecionado", Toast.LENGTH_LONG).show();
-                }else if(senha.getText().length() < 4) {
-                    Toast.makeText(getApplicationContext(), "Sua senha deve ter pelo menos 4 caracteres", Toast.LENGTH_LONG).show();
-                }else if(((!(senha.getText().toString()).equals(repsenha.getText().toString())))){
-                    Toast.makeText(getApplicationContext(), "As senhas não conferem", Toast.LENGTH_LONG).show();
-                }else{
-                    password = senha.getText().toString();
-                    Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso", Toast.LENGTH_LONG).show();
-                    db.child(username).child("name").setValue(cadastronome.getText().toString());
-                    db.child(username).child("last").setValue(cadastrosobrenome.getText().toString());
-                    db.child(username).child("department").setValue(spSetor.getSelectedItem().toString());
-                    db.child(username).child("password").setValue(senha.getText().toString());
-                    gtLogin();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                if(flag == 0){
+                    if(cadastronome.getText().toString().equals("")){
+                        cadastronome.setError("Este campo é obrigatório!");
+                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+                    }if(cadastrosobrenome.getText().toString().equals("")){
+                        cadastrosobrenome.setError("Este campo é obrigatório!");
+                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+                  }if(senha.getText().toString().equals("")) {
+                        senha.setError("Este campo é obrigatório!");
+                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+                  }if(repsenha.getText().toString().equals("")){
+                        repsenha.setError("Este campo é obrigatório!");
+                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+                     }else if(spSetor.getSelectedItem().toString().equals("Selecione seu setor")){
+                        Toast.makeText(getApplicationContext(), "Nenhum setor selecionado", Toast.LENGTH_LONG).show();
+                    }else if(senha.getText().length() < 4) {
+                        Toast.makeText(getApplicationContext(), "Sua senha deve ter pelo menos 4 caracteres", Toast.LENGTH_LONG).show();
+                    }else if(((!(senha.getText().toString()).equals(repsenha.getText().toString())))){
+                        Toast.makeText(getApplicationContext(), "As senhas não conferem", Toast.LENGTH_LONG).show();
+                    }else{
+                        password = senha.getText().toString();
+                        Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso"+flag, Toast.LENGTH_LONG).show();
+                        db.child(username).child("name").setValue(cadastronome.getText().toString());
+                        db.child(username).child("last").setValue(cadastrosobrenome.getText().toString());
+                        db.child(username).child("department").setValue(spSetor.getSelectedItem().toString());
+                        db.child(username).child("password").setValue(senha.getText().toString().toLowerCase());
+                        gtLogin();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Este usuário já está cadastrado", Toast.LENGTH_SHORT).show();
                 }
             }
         });
