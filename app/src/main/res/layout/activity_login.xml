@@ -17,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
+        android:id="@+id/userfield"
         android:layout_width="317dp"
         android:layout_height="43dp"
         android:layout_marginStart="20dp"
@@ -41,6 +42,7 @@
         tools:ignore="MissingConstraints">
 
         <EditText
+            android:id="@+id/passfield"
             android:layout_width="317dp"
             android:layout_height="43dp"
             android:layout_marginStart="20dp"
