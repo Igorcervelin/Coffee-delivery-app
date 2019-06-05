@@ -29,7 +29,8 @@ public class RegisterActivity extends AppCompatActivity {
     Button btRegister, btBack;
     Spinner spSetor;
     public String username, password;
-    private DatabaseReference db;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference db = database.getReference("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,6 @@ public class RegisterActivity extends AppCompatActivity {
         btRegister = (Button) findViewById(R.id.btRegister);
         btBack = (Button) findViewById(R.id.btBack);
         spSetor = (Spinner) findViewById(R.id.spSetor);
-        db = getDatabaseReference();
 
         Thread thread = new Thread() {
             @Override
@@ -115,9 +115,10 @@ public class RegisterActivity extends AppCompatActivity {
                 }else{
                     password = senha.getText().toString();
                     Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso", Toast.LENGTH_LONG).show();
-                    db.child("users").child(username).child("name").setValue(cadastronome.getText().toString());
-                    db.child("users").child(username).child("last").setValue(cadastrosobrenome.getText().toString());
-                    db.child("users").child(username).child("setor").setValue(spSetor.getSelectedItem().toString());
+                    db.child(username).child("name").setValue(cadastronome.getText().toString());
+                    db.child(username).child("last").setValue(cadastrosobrenome.getText().toString());
+                    db.child(username).child("department").setValue(spSetor.getSelectedItem().toString());
+                    db.child(username).child("password").setValue(senha.getText().toString());
                     gtLogin();
                 }
             }
