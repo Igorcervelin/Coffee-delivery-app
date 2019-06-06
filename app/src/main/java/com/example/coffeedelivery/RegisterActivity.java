@@ -19,12 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.example.coffeedelivery.FirebaseDB.getDatabaseReference;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -33,7 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
     public static  TextView tvLogin;
     Button btRegister, btBack;
     Spinner spSetor;
-    public String username, password;
+    public String username;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference db = database.getReference("users");
     int flag = 0;
@@ -57,7 +54,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void run() {
                 try {
                     while (!isInterrupted()) {
-                        Thread.sleep(500);
+                        Thread.sleep(550);
                         runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -92,68 +89,74 @@ public class RegisterActivity extends AppCompatActivity {
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                            if(username.equals(snapshot.getKey())){
-                                flag = 1;
+                fieldsverif();
+                if(flag == 1) {
+                    db.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (final DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                if(username.equals(snapshot.getKey())) {
+                                    Toast.makeText(getApplicationContext(), "Este usuário já existe, tente novamente"+snapshot, Toast.LENGTH_LONG).show();
+                                } else {
+                                    //register();
+                                }
                             }
                         }
-                    }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                if(flag == 0){
-                    if(cadastronome.getText().toString().equals("")){
-                        cadastronome.setError("Este campo é obrigatório!");
-                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                    }if(cadastrosobrenome.getText().toString().equals("")){
-                        cadastrosobrenome.setError("Este campo é obrigatório!");
-                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                  }if(senha.getText().toString().equals("")) {
-                        senha.setError("Este campo é obrigatório!");
-                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                  }if(repsenha.getText().toString().equals("")){
-                        repsenha.setError("Este campo é obrigatório!");
-                        Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
-                     }else if(spSetor.getSelectedItem().toString().equals("Selecione seu setor")){
-                        Toast.makeText(getApplicationContext(), "Nenhum setor selecionado", Toast.LENGTH_LONG).show();
-                    }else if(senha.getText().length() < 4) {
-                        Toast.makeText(getApplicationContext(), "Sua senha deve ter pelo menos 4 caracteres", Toast.LENGTH_LONG).show();
-                    }else if(((!(senha.getText().toString()).equals(repsenha.getText().toString())))){
-                        Toast.makeText(getApplicationContext(), "As senhas não conferem", Toast.LENGTH_LONG).show();
-                    }else{
-                        password = senha.getText().toString();
-                        Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso"+flag, Toast.LENGTH_LONG).show();
-                        db.child(username).child("name").setValue(cadastronome.getText().toString());
-                        db.child(username).child("last").setValue(cadastrosobrenome.getText().toString());
-                        db.child(username).child("department").setValue(spSetor.getSelectedItem().toString());
-                        db.child(username).child("password").setValue(senha.getText().toString().toLowerCase());
-                        gtLogin();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Este usuário já está cadastrado", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             }
         });
-     }
+    }
 
     @Override
     public void onBackPressed(){ //Botão BACK padrão do android
-        startActivity(new Intent(this, LoginActivity.class)); //O efeito ao ser pressionado do botão (no caso abre a activity)
+        startActivity(new Intent(this, LoginActivity.class));
         finishAffinity(); //Método para matar a activity e não deixa-lá indexada na pilhagem
         return;
     }
+
+    private void fieldsverif(){
+            if(cadastronome.getText().toString().equals("")){
+                cadastronome.setError("Este campo é obrigatório!");
+                Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+            }if(cadastrosobrenome.getText().toString().equals("")){
+                cadastrosobrenome.setError("Este campo é obrigatório!");
+                Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+            }if(senha.getText().toString().equals("")) {
+                senha.setError("Este campo é obrigatório!");
+                Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+            }if(repsenha.getText().toString().equals("")){
+                repsenha.setError("Este campo é obrigatório!");
+                Toast.makeText(getApplicationContext(), "Preencha todos os campos solicitados", Toast.LENGTH_SHORT).show();
+            }else if(spSetor.getSelectedItem().toString().equals("Selecione seu setor")){
+                Toast.makeText(getApplicationContext(), "Nenhum setor selecionado", Toast.LENGTH_LONG).show();
+            }else if(senha.getText().length() < 4) {
+                Toast.makeText(getApplicationContext(), "Sua senha deve ter pelo menos 4 caracteres", Toast.LENGTH_LONG).show();
+            }else if(((!(senha.getText().toString()).equals(repsenha.getText().toString())))){
+                Toast.makeText(getApplicationContext(), "As senhas não conferem", Toast.LENGTH_LONG).show();
+            }else{
+                flag = 1;
+            }
+    }
+
+        private void register(){
+            Toast.makeText(getApplicationContext(), "Cadastro realizado com sucesso", Toast.LENGTH_LONG).show();
+            db.child(username).child("name").setValue(cadastronome.getText().toString());
+            db.child(username).child("last").setValue(cadastrosobrenome.getText().toString());
+            db.child(username).child("department").setValue(spSetor.getSelectedItem().toString());
+            db.child(username).child("password").setValue(senha.getText().toString().toLowerCase());
+            gtLogin();
+        }
 
      private void gtLogin(){
          Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
          startActivity(i);
          finish();
+         finishAffinity();
      }
 }
 
